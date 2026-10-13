@@ -1,45 +1,32 @@
-import mysql from 'mysql2/promise';
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
 
-export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET');
+$HOST="116.212.73.51"; $USER="u236_EHRIQGvk9J"; $PASS="KpglPz.A6l2jB9PT23iOPG5c"; $DB="s236_testing"; $PORT=3306;
+$name = trim($_GET['name'] ?? '');
+if($name===''){ echo json_encode(['exists'=>false]); exit; }
 
-  const name = (req.query.name || '').trim();
-  if (!name) return res.status(200).json({ exists: false });
+$mysqli = new mysqli($HOST,$USER,$PASS,$DB,$PORT);
+if($mysqli->connect_error){ echo json_encode(['exists'=>false,'error'=>$mysqli->connect_error]); exit; }
 
-  let conn;
-  try {
-    conn = await mysql.createConnection({
-      host: process.env.DB_HOST || '116.212.73.51',
-      port: 3306,
-      user: process.env.DB_USER || 'u236_EHRIQGvk9J',
-      password: process.env.DB_PASS || 'KpglPz.A6l2jB9PT23iOPG5c',
-      database: process.env.DB_NAME || 's236_testing',
-      connectTimeout: 5000
-    });
+$name = trim($name);
 
-    const queries = [
-      "SELECT 1 FROM `playerucp` WHERE `ucp` =? LIMIT 1",
-      "SELECT 1 FROM `playerucp` WHERE `username` =? LIMIT 1",
-      "SELECT 1 FROM `playerucp` WHERE `name` =? LIMIT 1",
-      "SELECT 1 FROM `player_characters` WHERE `Character` =? LIMIT 1",
-      "SELECT 1 FROM `players` WHERE `Name` =? LIMIT 1"
-    ];
+// 1. Cek di player_characters dulu (karena briyan itu IC)
+$q1 = $mysqli->prepare("SELECT Character_Name, ucp FROM player_characters WHERE LOWER(TRIM(Character_Name)) = LOWER(TRIM(?)) OR LOWER(TRIM(Character)) = LOWER(TRIM(?)) OR LOWER(TRIM(Name)) = LOWER(TRIM(?)) LIMIT 1");
+$q1->bind_param("sss",$name,$name,$name);
+$q1->execute(); $r1=$q1->get_result();
+if($r1->num_rows>0){ echo json_encode(['exists'=>true,'source'=>'player_characters','name'=>$name]); exit; }
 
-    let found = false;
-    let source = '';
-    for (const sql of queries) {
-      try {
-        const [rows] = await conn.execute(sql, [name]);
-        if (rows.length > 0) { found = true; source = sql; break; }
-      } catch (e) { continue; }
-    }
+// 2. Cek di playerucp (UCP)
+$q2 = $mysqli->prepare("SELECT ucp FROM playerucp WHERE LOWER(TRIM(ucp)) = LOWER(TRIM(?)) OR LOWER(TRIM(username)) = LOWER(TRIM(?)) OR LOWER(TRIM(name)) = LOWER(TRIM(?)) LIMIT 1");
+$q2->bind_param("sss",$name,$name,$name);
+$q2->execute(); $r2=$q2->get_result();
+if($r2->num_rows>0){ echo json_encode(['exists'=>true,'source'=>'playerucp','name'=>$name]); exit; }
 
-    return res.status(200).json({ exists: found, name, source });
+// 3. Cek di players
+$q3 = $mysqli->prepare("SELECT Name FROM players WHERE LOWER(TRIM(Name)) = LOWER(TRIM(?)) LIMIT 1");
+$q3->bind_param("s",$name);
+$q3->execute(); $r3=$q3->get_result();
 
-  } catch (err) {
-    return res.status(500).json({ exists: false, error: err.message });
-  } finally {
-    if (conn) await conn.end();
-  }
-}
+echo json_encode(['exists'=>$r3->num_rows>0,'source'=> $r3->num_rows>0?'players':'none','name'=>$name]);
