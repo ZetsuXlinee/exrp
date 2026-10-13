@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=5,viewport-fit=cover">
+<meta name="theme-color" content="#070709">
+<title>EXERCIVE ROLEPLAY - LIST KENDARAAN IMPORT EXRP</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#070709;color:#fff;font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
+header{position:sticky;top:0;z-index:40;background:#0a0a0cdd;backdrop-filter:blur(12px);border-bottom:1px solid #222;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;padding-top:calc(14px + env(safe-area-inset-top))}
+.logo{display:flex;gap:10px;align-items:center}.logo-icon{width:38px;height:38px;background:#facc15;border-radius:10px;display:grid;place-items:center}
+.search{background:#18181b;border:1px solid #27272a;border-radius:999px;padding:12px 16px;color:#fff;font-size:14px;width:100%;max-width:260px;outline:none}
+.wrap{max-width:1320px;margin:0 auto;padding:16px;display:grid;grid-template-columns:1fr 320px;gap:16px}
+@media(max-width:1024px){.wrap{grid-template-columns:1fr}.side{order:-1;position:relative;top:0}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px}
+@media(min-width:768px){.grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr))}}
+.card{background:#121214;border:1px solid #232326;border-radius:16px;overflow:hidden}
+.card:hover{border-color:#facc15}
+.img{position:relative;height:132px;background:radial-gradient(120% 120% at 50% 20%,#232326,#0f0f10);display:grid;place-items:center;padding:10px}
+.img img{max-width:92%;max-height:92%;object-fit:contain}
+.price{position:absolute;top:8px;right:8px;background:#facc15;color:#000;font-weight:900;font-size:10.5px;padding:5px 9px;border-radius:999px;display:flex;align-items:center;gap:5px}
+.csvg{width:18px;height:18px}
+.meta{padding:12px}.meta h3{font-size:11.5px;font-weight:900;min-height:28px}
+.meta p{font-size:10px;color:#8a8a93;margin-top:4px}
+button{appearance:none;background:#1e1e21;border:1px solid #2a2a2e;color:#fff;font-size:11px;font-weight:700;padding:10px;border-radius:10px;cursor:pointer;margin-top:8px;width:100%;min-height:44px}
+button:hover{background:#facc15;color:#000}
+.side{position:sticky;top:86px;height:fit-content}
+.calc{background:#facc15;color:#000;border-radius:20px;padding:18px}
+.calc input{width:100%;margin-top:12px;background:#000;color:#facc15;font-weight:900;padding:12px 14px;border-radius:12px;border:none;font-size:16px;min-height:44px}
+.footer{text-align:center;padding:24px;color:#555;font-size:10px}
+#loginOverlay{position:fixed;inset:0;background:#070709f5;backdrop-filter:blur(18px);z-index:9999;display:grid;place-items:center;padding:16px}
+</style>
+</head>
+<body>
+<div id="loginOverlay">
+  <div style="background:#121214;border:1px solid #facc15;border-radius:24px;padding:28px;max-width:400px;width:100%;text-align:center;box-shadow:0 0 40px #facc1522">
+    <div style="width:64px;height:64px;background:#facc15;border-radius:18px;display:grid;place-items:center;margin:0 auto 14px"><svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="11" fill="#000"/><circle cx="12" cy="12" r="7.5" fill="#facc15"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg></div>
+    <h2 style="font-weight:900;font-size:20px">EXERCIVE LOGIN</h2>
+    <p style="font-size:11px;color:#888;margin-top:6px">MASUKAN NAMA UCP / IC - s236_testing</p>
+    <input id="ucpInput" type="text" placeholder="Nama UCP / IC" style="width:100%;margin-top:18px;background:#000;border:1px solid #333;color:#fff;padding:14px;border-radius:12px;font-size:16px;outline:none">
+    <button id="loginBtn" onclick="checkUCP()" style="margin-top:14px;background:#facc15;color:#000;font-weight:900;min-height:48px;border-radius:12px;width:100%;border:none;cursor:pointer">MASUK DEALERSHIP</button>
+    <div id="loginMsg" style="display:none;margin-top:14px;padding:12px;border-radius:10px;font-size:12px;font-weight:700"></div>
+    <p style="margin-top:14px;font-size:10px;color:#555">DB: 116.212.73.51:3306 / s236_testing • Tabel: playerucp</p>
+  </div>
+</div>
+<header>
+<div class="logo"><div class="logo-icon"><svg viewBox="0 0 24 24" width="28" height="28"><circle cx="12" cy="12" r="11" fill="#000"/><circle cx="12" cy="12" r="7.5" fill="#facc15"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg></div><div><h1 style="font-weight:900;font-size:14px">EXERCIVE ROLEPLAY</h1><div style="font-size:10px;color:#888">LIST KENDARAAN IMPORT EXRP • VERCEL READY • SAMP 0.3.7</div></div></div>
+<div style="display:flex;gap:8px;align-items:center"><input id="q" class="search" type="search" placeholder="Cari: NRG-500, ELEGY..." autocomplete="off"><button onclick="logoutUCP()" style="width:auto;padding:8px 12px;min-height:36px;font-size:10px">LOGOUT</button></div>
+</header>
+<div class="wrap">
+<div>
+<h2 style="font-weight:900;margin-bottom:14px;font-size:16px">36 UNIT IMPORT SAMP - FOTO SESUAI NAMA • SVG EXRP COIN • 1 COIN = 800 PERAK</h2>
+<div class="grid" id="grid">
+<div class="card" data-name="bloodring banger"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/504.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>75 COIN</div></div><div class="meta"><h3>BLOODRING BANGER</h3><p>75 x 800 = Rp 60,000</p><button onclick="addCalc(75,'BLOODRING BANGER')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="caddy"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/485.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>200 COIN</div></div><div class="meta"><h3>CADDY</h3><p>200 x 800 = Rp 160,000</p><button onclick="addCalc(200,'CADDY')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="camper"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/483.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>75 COIN</div></div><div class="meta"><h3>CAMPER</h3><p>75 x 800 = Rp 60,000</p><button onclick="addCalc(75,'CAMPER')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="kart"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/571.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>65 COIN</div></div><div class="meta"><h3>KART</h3><p>65 x 800 = Rp 52,000</p><button onclick="addCalc(65,'KART')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="mesa"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/500.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>45 COIN</div></div><div class="meta"><h3>MESA</h3><p>45 x 800 = Rp 36,000</p><button onclick="addCalc(45,'MESA')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="quad"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/471.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>90 COIN</div></div><div class="meta"><h3>QUAD</h3><p>90 x 800 = Rp 72,000</p><button onclick="addCalc(90,'QUAD')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="sandking"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/495.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>200 COIN</div></div><div class="meta"><h3>SANDKING</h3><p>200 x 800 = Rp 160,000</p><button onclick="addCalc(200,'SANDKING')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="hotring"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/494.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>200 COIN</div></div><div class="meta"><h3>HOTRING</h3><p>200 x 800 = Rp 160,000</p><button onclick="addCalc(200,'HOTRING')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="hotring racer a"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/502.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>230 COIN</div></div><div class="meta"><h3>HOTRING RACER A</h3><p>230 x 800 = Rp 184,000</p><button onclick="addCalc(230,'HOTRING RACER A')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="hotring racer b"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/503.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>250 COIN</div></div><div class="meta"><h3>HOTRING RACER B</h3><p>250 x 800 = Rp 200,000</p><button onclick="addCalc(250,'HOTRING RACER B')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="patriot"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/470.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>300 COIN</div></div><div class="meta"><h3>PATRIOT</h3><p>300 x 800 = Rp 240,000</p><button onclick="addCalc(300,'PATRIOT')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="journey"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/508.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>400 COIN</div></div><div class="meta"><h3>JOURNEY</h3><p>400 x 800 = Rp 320,000</p><button onclick="addCalc(400,'JOURNEY')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="fbi rancher"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/490.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>85 COIN</div></div><div class="meta"><h3>FBI RANCHER</h3><p>85 x 800 = Rp 68,000</p><button onclick="addCalc(85,'FBI RANCHER')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="rancher"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/489.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>45 COIN</div></div><div class="meta"><h3>RANCHER</h3><p>45 x 800 = Rp 36,000</p><button onclick="addCalc(45,'RANCHER')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="duneride"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/573.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>150 COIN</div></div><div class="meta"><h3>DUNERIDE</h3><p>150 x 800 = Rp 120,000</p><button onclick="addCalc(150,'DUNERIDE')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="monster"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/444.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>400 COIN</div></div><div class="meta"><h3>MONSTER</h3><p>400 x 800 = Rp 320,000</p><button onclick="addCalc(400,'MONSTER')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="stratum"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/561.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>100 COIN</div></div><div class="meta"><h3>STRATUM</h3><p>100 x 800 = Rp 80,000</p><button onclick="addCalc(100,'STRATUM')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="bf injection"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/424.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>50 COIN</div></div><div class="meta"><h3>BF INJECTION</h3><p>50 x 800 = Rp 40,000</p><button onclick="addCalc(50,'BF INJECTION')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="bandito"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/568.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>35 COIN</div></div><div class="meta"><h3>BANDITO</h3><p>35 x 800 = Rp 28,000</p><button onclick="addCalc(35,'BANDITO')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="zr-350"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/477.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>150 COIN</div></div><div class="meta"><h3>ZR-350</h3><p>150 x 800 = Rp 120,000</p><button onclick="addCalc(150,'ZR-350')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="uranus"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/558.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>75 COIN</div></div><div class="meta"><h3>URANUS</h3><p>75 x 800 = Rp 60,000</p><button onclick="addCalc(75,'URANUS')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="turismo"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/451.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>200 COIN</div></div><div class="meta"><h3>TURISMO</h3><p>200 x 800 = Rp 160,000</p><button onclick="addCalc(200,'TURISMO')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="super gt"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/506.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>200 COIN</div></div><div class="meta"><h3>SUPER GT</h3><p>200 x 800 = Rp 160,000</p><button onclick="addCalc(200,'SUPER GT')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="jester"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/559.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>150 COIN</div></div><div class="meta"><h3>JESTER</h3><p>150 x 800 = Rp 120,000</p><button onclick="addCalc(150,'JESTER')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="infernus"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/411.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>120 COIN</div></div><div class="meta"><h3>INFERNUS</h3><p>120 x 800 = Rp 96,000</p><button onclick="addCalc(120,'INFERNUS')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="hotknife"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/434.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>150 COIN</div></div><div class="meta"><h3>HOTKNIFE</h3><p>150 x 800 = Rp 120,000</p><button onclick="addCalc(150,'HOTKNIFE')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="flash"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/565.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>80 COIN</div></div><div class="meta"><h3>FLASH</h3><p>80 x 800 = Rp 64,000</p><button onclick="addCalc(80,'FLASH')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="elegy"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/562.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>150 COIN</div></div><div class="meta"><h3>ELEGY</h3><p>150 x 800 = Rp 120,000</p><button onclick="addCalc(150,'ELEGY')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="comet"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/480.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>50 COIN</div></div><div class="meta"><h3>COMET</h3><p>50 x 800 = Rp 40,000</p><button onclick="addCalc(50,'COMET')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="cheetah"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/415.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>85 COIN</div></div><div class="meta"><h3>CHEETAH</h3><p>85 x 800 = Rp 68,000</p><button onclick="addCalc(85,'CHEETAH')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="bullet"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/541.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>100 COIN</div></div><div class="meta"><h3>BULLET</h3><p>100 x 800 = Rp 80,000</p><button onclick="addCalc(100,'BULLET')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="banshee"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/429.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>50 COIN</div></div><div class="meta"><h3>BANSHEE</h3><p>50 x 800 = Rp 40,000</p><button onclick="addCalc(50,'BANSHEE')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="phoenix"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/603.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>75 COIN</div></div><div class="meta"><h3>PHOENIX</h3><p>75 x 800 = Rp 60,000</p><button onclick="addCalc(75,'PHOENIX')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="buffalo"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/402.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>50 COIN</div></div><div class="meta"><h3>BUFFALO</h3><p>50 x 800 = Rp 40,000</p><button onclick="addCalc(50,'BUFFALO')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="nrg-500"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/522.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>50 COIN</div></div><div class="meta"><h3>NRG-500</h3><p>50 x 800 = Rp 40,000</p><button onclick="addCalc(50,'NRG-500')">+ KALKULATOR</button></div></div>
+<div class="card" data-name="stretch"><div class="img"><img src="https://assets.open.mp/assets/images/vehicles/409.png"><div class="price"><svg viewBox="0 0 24 24" class="csvg"><circle cx="12" cy="12" r="11" fill="#fde047"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#000">EXRP</text></svg>200 COIN</div></div><div class="meta"><h3>STRETCH</h3><p>200 x 800 = Rp 160,000</p><button onclick="addCalc(200,'STRETCH')">+ KALKULATOR</button></div></div>
+</div>
+</div>
+<div class="side"><div class="calc"><h3 style="display:flex;gap:8px;align-items:center"><svg viewBox="0 0 24 24" width="22" height="22"><circle cx="12" cy="12" r="11" fill="#000"/><text x="12" y="15" text-anchor="middle" font-size="5.5" font-weight="900" fill="#facc15">EXRP</text></svg>KALKULATOR • <span id="ucpShow">-</span></h3><small>1 COIN = 800 Perak • Vercel API /api/check-ucp</small><input id="coinIn" type="number" value="0"><div style="margin-top:12px;background:#00000018;padding:12px;border-radius:12px"><div>Total Perak: <b id="rpOut">Rp 0</b></div><div id="list" style="margin-top:8px;display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto"></div><button onclick="total=0;list.innerHTML='';render()" style="background:#000;color:#facc15;margin-top:10px">RESET</button></div></div></div>
+</div>
+<div class="footer">© EXERCIVE ROLEPLAY • VERCEL • s236_testing • playerucp • 36 VEHICLES</div>
+<script>
+const q=document.getElementById('q');const cards=[...document.querySelectorAll('.card')];
+q.addEventListener('input',e=>{let v=e.target.value.toLowerCase().trim();cards.forEach(c=>c.style.display=c.dataset.name.includes(v)?'':'none')});
+let total=0;const coinIn=document.getElementById('coinIn');const rpOut=document.getElementById('rpOut');const list=document.getElementById('list');
+function addCalc(p,n){total+=p;render();let d=document.createElement('div');d.textContent=n+' - '+p+' COIN';d.style.cssText='background:#00000012;padding:8px;border-radius:8px;font-size:11px;font-weight:700';list.appendChild(d)}
+function render(){coinIn.value=total;rpOut.textContent='Rp '+(total*800).toLocaleString('id-ID')}
+coinIn.addEventListener('input',e=>{total=parseInt(e.target.value)||0;list.innerHTML='';render()});
+let loggedUCP=localStorage.getItem('exrp_ucp');
+const overlay=document.getElementById('loginOverlay');
+const ucpShow=document.getElementById('ucpShow');
+if(loggedUCP){overlay.style.display='none';ucpShow.textContent=loggedUCP;}
+async function checkUCP(){
+  const name=document.getElementById('ucpInput').value.trim();
+  const msg=document.getElementById('loginMsg');
+  const btn=document.getElementById('loginBtn');
+  if(!name){msg.style.display='block';msg.style.background='#3f1a1a';msg.style.color='#ffaaaa';msg.textContent='Isi nama UCP/IC dulu!';return;}
+  btn.textContent='CHECKING...';btn.disabled=true;
+  try{
+    const res=await fetch(`/api/check-ucp?name=${encodeURIComponent(name)}`);
+    const data=await res.json();
+    if(data.exists){
+      localStorage.setItem('exrp_ucp',name);
+      overlay.style.display='none';
+      ucpShow.textContent=name;
+    }else{
+      msg.style.display='block';msg.style.background='#3f1a1a';msg.style.color='#ffaaaa';
+      msg.innerHTML=`UCP/IC <b>${name}</b> TIDAK TERDAFTAR!<br>Silahkan membuat UCP di Discord Official EXERCIVE`;
+    }
+  }catch(e){
+    msg.style.display='block';msg.style.background='#3f1a1a';msg.style.color='#ffaaaa';
+    msg.textContent='Gagal konek DB: '+e.message;
+  }
+  btn.textContent='MASUK DEALERSHIP';btn.disabled=false;
+}
+function logoutUCP(){localStorage.removeItem('exrp_ucp');location.reload();}
+</script>
+</body>
+</html>
